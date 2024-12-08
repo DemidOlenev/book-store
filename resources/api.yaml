@@ -1,0 +1,273 @@
+openapi: 3.0.0
+info:
+  title: Orders API
+  version: 1.0.0
+  description: API для управления клиентами, товарами, заказами и связью заказов с товарами.
+
+servers:
+  - url: http://localhost:8080
+    description: Локальный сервер
+
+paths:
+  /clients:
+    get:
+      summary: Получить список клиентов
+      responses:
+        '200':
+          description: Список клиентов
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Client'
+    post:
+      summary: Добавить нового клиента
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Client'
+      responses:
+        '201':
+          description: Клиент добавлен
+
+  /clients/{id}:
+    get:
+      summary: Получить информацию о клиенте
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Информация о клиенте
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+        '404':
+          description: Клиент не найден
+    put:
+      summary: Обновить данные клиента
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Client'
+      responses:
+        '200':
+          description: Данные клиента обновлены
+    delete:
+      summary: Удалить клиента
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Клиент удалён
+
+  /goods:
+    get:
+      summary: Получить список товаров
+      responses:
+        '200':
+          description: Список товаров
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Good'
+    post:
+      summary: Добавить новый товар
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Good'
+      responses:
+        '201':
+          description: Товар добавлен
+
+  /goods/{id}:
+    get:
+      summary: Получить информацию о товаре
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Информация о товаре
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Good'
+        '404':
+          description: Товар не найден
+    put:
+      summary: Обновить данные товара
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Good'
+      responses:
+        '200':
+          description: Данные товара обновлены
+    delete:
+      summary: Удалить товар
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Товар удалён
+
+  /orders:
+    get:
+      summary: Получить список заказов
+      responses:
+        '200':
+          description: Список заказов
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+    post:
+      summary: Создать новый заказ
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Order'
+      responses:
+        '201':
+          description: Заказ создан
+
+  /orders/{id}:
+    get:
+      summary: Получить информацию о заказе
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Информация о заказе
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '404':
+          description: Заказ не найден
+    delete:
+      summary: Удалить заказ
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Заказ удалён
+
+  /orders/{orderId}/goods:
+    post:
+      summary: Добавить товар в заказ
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderGood'
+      responses:
+        '201':
+          description: Товар добавлен в заказ
+
+components:
+  schemas:
+    Client:
+      type: object
+      properties:
+        id:
+          type: integer
+        first_name:
+          type: string
+        last_name:
+          type: string
+        phone:
+          type: string
+
+    Good:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        price:
+          type: number
+          format: float
+
+    Order:
+      type: object
+      properties:
+        id:
+          type: integer
+        client_id:
+          type: integer
+        order_date:
+          type: string
+          format: date
+
+    OrderGood:
+      type: object
+      properties:
+        id:
+          type: integer
+        order_id:
+          type: integer
+        goods_id:
+          type: integer
+        quantity:
+          type: integer
